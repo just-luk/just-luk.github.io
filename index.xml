@@ -10,5 +10,14 @@
       <link>https://just-luk.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator><atom:link href="https://just-luk.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About Me</title>
+      <link>https://just-luk.github.io/about/</link>
+      <pubDate>Mon, 13 Feb 2023 15:08:00 +0000</pubDate>
+      
+      <guid>https://just-luk.github.io/about/</guid>
+      <description>Hello World! </description>
+    </item>
+    
   </channel>
 </rss>
