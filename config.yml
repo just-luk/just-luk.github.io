@@ -58,13 +58,13 @@ params:
 
   # profile-mode
   profileMode:
-    enabled: false # needs to be explicitly set
+    enabled: True # needs to be explicitly set
     title: Luke Griffith
-    subtitle: "This is subtitle"
-    imageUrl: "<img location>"
+    subtitle: "Hacker & Developer"
+    imageUrl: "https://avatars.githubusercontent.com/u/81766276?v=4"
     imageWidth: 120
     imageHeight: 120
-    imageTitle: my image
+    imageTitle: "Profile Image"
     buttons:
       - name: Posts
         url: posts
