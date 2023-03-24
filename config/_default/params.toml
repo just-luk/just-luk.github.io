@@ -8,7 +8,7 @@ enableCodeCopy = true
 
 
 [header]
-  layout = "basic" # valid options: basic, hamburger, hybrid, custom
+  layout = "hybrid" # valid options: basic, hamburger, hybrid, custom
   logo = "icon.png"
   showTitle = false
 
