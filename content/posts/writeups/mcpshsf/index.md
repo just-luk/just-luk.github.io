@@ -369,16 +369,99 @@ This is more evidence that Long is the murderer, as he is so mad at Chance that 
 Lastly, post from Karst gives a filesharing website, [htts://fileshare-flask.chals.mcpshsf.com](https://fileshare-flask.chals.mcpshsf.com). Using the username for the pan image, `k4r5t_t0p0gr4phy`, and the password from the robot images, `y4z00_tr1but4ry`. We can log in and look for more clues. 
 
 ## Chance's Blog
+Before we look at the filesharing site, let's go back and investigate Chance's blog that he posted to Twitter.
 ### Lockpicking
+On his blog, we see that Chance locked a key with a bike lock:
+
+> I locked the key with a bike lock and I don’t know the combination :(
+
+After visiting the HT230 Lab, we get access to a bike lock to crack. To pick this lock, we can use the gap between the rings of the bike lock to determine if a number is right or not. The step to pick are are:
+
+1. Move through each number in the first ring, pulling the lock each time
+2. The number that is right will have a noticeable gap between the rings
+2. Repeat steps 1 and 2 for the second, third, and fourth rings.
+
+Upon opening the bike lock, we get the following information:
+```
+flag{l33t_l0ckp1ck1ng_br0}
+the key is ilovelatkesalot!
+```
+We get a new flag, `flag{l33t_l0ckp1ck1ng_br0}`, and a key, ``ilovelatkesalot!``. We can use this key to decrypt the information the blog post.
 
 ### Unknown Encryption
+On the same blog post where the bike lock is mentioned, Chance also mentions that he encrypted his data using the key he locked:
+
+> The information is below, I think I used some sort of Advanced Encryption Algorithm.
+> 1Pm08qXUT64euKHtq1cnN1Ig6yqbT2qWbcSyFnJxYW8MqwZmdGxNW/i5W
+> +eI98T06iP3LBShWNX65XBBY74FNTp0CL2kOzGJzLSMJ1541XQ3g94VCBW0F
+> xnAOB5VyP7hLmdSmTC65rHQmsgihW2GXTXicId27OOuUu/QFidbZ6M=
+
+Chance mentions that he used an "Advanced Encryption Algorithm", which suggests that he used AES. We can use [CyberChef](https://cyberchef.org) to decrypt this data. Using the key from the Lockpicking Challenge, a random IV the mode `AES-256-CBC`, we get:
+```
+https://drive.google.com/file/d/1sLaQw-kMYGhexxUV12y09RJj_blVLzNz/view?usp=sharing 
+flag{f0ll0w_th3_url!}
+```
+This gives us a flag  `flag{f0ll0w_th3_url!}` and a link to a Google Drive file. This file doesn't open but we can still download it. Using [HexEdit](https://hexed.it/), we can see that the file's header is corrupted. We can fix this by changing the first 4 bytes to `89 50 4E 47`. This allows us to open the image:
+![KarstID](karst_id.png)
+
+From this image, we can see that Karst is a private investigator. Therefore, he is probably not the murderer.
 
 ### Latke Recipe
+From the blog, we also find this [word document](latke_recipe.docx). Opening this file gives us a warning, but we cam open it and get a recipe for latkes. Remembering that Docx files are just glorified zip files, we can rename this file to `latke_recipe.zip` and look for hidden contents. Inside the zip file, we find the flag: `flag{00h_l4tk3s!}`
+![carving](docx_carving.png)
 
 ### SQL Log
+The last post on Chance's blog gives us a log file of a site that Chance runs. Considering the earlier messages on Twitter, these logs are probably for the secret chat site. The logs look like this:
+```shell
+172.21.0.4 - - [14/Mar/2023:00:29:35 +0000] "GET /?user=%27%20ORDER%20BY%201--%20-&pass= HTTP/1.1" 200 224 "-" "Mozilla/5.0 (X11; U; Linux i686; es-ES; rv:1.8.1.2) Gecko/20070220 Firefox/2.0.0.2"
+172.21.0.4 - - [14/Mar/2023:00:29:35 +0000] "GET /?user=%27%20ORDER%20BY%204608--%20-&pass= HTTP/1.1" 200 458 "-" "Mozilla/5.0 (X11; U; Linux i686; es-ES; rv:1.8.1.2) Gecko/20070220 Firefox/2.0.0.2"
+172.21.0.4 - - [14/Mar/2023:00:29:35 +0000] "GET /?user=%27%20ORDER%20BY%2010--%20-&pass= HTTP/1.1" 200 458 "-" "Mozilla/5.0 (X11; U; Linux i686; es-ES; rv:1.8.1.2) Gecko/20070220 Firefox/2.0.0.2"
+172.21.0.4 - - [14/Mar/2023:00:29:35 +0000] "GET /?user=%27%20ORDER%20BY%206--%20-&pass= HTTP/1.1" 200 458 "-" "Mozilla/5.0 (X11; U; Linux i686; es-ES; rv:1.8.1.2) Gecko/20070220 Firefox/2.0.0.2"
+```
+This indicates that a SQL Injection was carried out. In fact, this challenge was actually generated from a SQLmap attack. Looking towards the end of the log, we find that a timing attack was carried out:
+```shell 
+172.21.0.4 - - [14/Mar/2023:00:35:05 +0000] "GET /?user=%27%20AND%20
+%28SELECT%207410%20FROM%20%28SELECT%28SLEEP%281-%28IF%28ORD%28MID%28
+%28SELECT%20IFNULL%28CAST%28username%20AS%20NCHAR%29%2C0x20%29%20FROM
+%20admin_site.users%20ORDER%20BY%20id%20LIMIT%201%2C1%29%2C8%2C1%29%29
+%3E113%2C0%2C1%29%29%29%29%29OEDl%29%20AND%20%27ogSF%27%3D%
+```
+Cleaning this up and extracting the sql query we get:
+```sql
+AND (SELECT 7410 FROM (SELECT(SLEEP(1-(IF(ORD(MID((SELECT 
+IFNULL(CAST(username AS NCHAR),0x20) FROM admin_site.users 
+ORDER BY id LIMIT 1,1),8,1))>113,0,1)))))OEDl) AND 'ogSF'=%
+```
+This query is checking if the the 8th character of the username is greater than 113. If it is, it will sleep for 1 second. If it isn't, it will sleep for 0 seconds. Decoding more of the logs, we see that the attack checks if a character is greater than another number. Then, it decrease the other number until the character is found. After that, it confirms if its guess is correct by checking if it not equal to the character. Using this information, we can find the information stolen by looking for any != signs in the logs:
+```python
+from urllib.parse import unquote
+
+with open('access.log', 'r') as f:
+    lines = f.readlines()
+
+decoded_data = ""
+for line in lines:
+    request_part = line.split(' ')[6]
+    decoded_request = unquote(request_part)
+    char_index = decoded_request.find('!=')
+    if char_index != -1:
+        temp = decoded_request[char_index+2:char_index+5]
+        if(temp[-1] == ','):
+            decoded_data += chr(int(temp[:-1]))
+        else:
+            decoded_data += chr(int(temp))
+print(decoded_data)
+```
+This gives us the flag `flag{l33t_l0gs_br0}` and a username `chance` and password `mhm_p0t4t0es`. We can use these credentials to log into the Secret Chat site.
 
 ## Fileshare
+Using the information (username `k4r5t_t0p0gr4phy` and password `y4z00_tr1but4ry`) retrived from Facebook earlier, we look at the files on the Fileshare.
 ### Encrypted Zip
+We find a zipfile that is encrypted but we don't know the password. There is also a wordlist in the same directory, suggesting that the password is on the wordlist. Therefore, we can use the `fcrackzip` tool to crack the password using the wordlist:
+```shell
+fcrackzip -D -p wordlist.txt -u evidence.zip
+```
+
 
 ### Spectrogram
 
