@@ -83,15 +83,15 @@ Here's a graph of all the challenges for MCPSHSF 2023:
   const getColor = (node) => {
     switch (node.group) {
       case 1:
-        return '#ECEBF3'
+        return '#C77DFF';
       case 2:
-        return '#EC7D10';
+        return '#ff8fa3';
       case 3:
-        return '#D56AA0';
+        return '#9D4EDD';
       case 4:
-        return '#A64253';
+        return '#D56AA0';
       case 5:
-        return '#8A4E19';
+        return '#7B2CBF';
       default:
         return '#000000';
     }
@@ -105,7 +105,7 @@ Here's a graph of all the challenges for MCPSHSF 2023:
       .width(575)
       .height(550)
       .backgroundColor('dark: black white')
-      .linkColor(() => '#616850')
+      .linkColor(() => '#848482')
       .linkDirectionalArrowLength(10)
       .nodeCanvasObject((node, ctx, globalScale) => {
         const label = node.id;
@@ -127,32 +127,246 @@ Here's a graph of all the challenges for MCPSHSF 2023:
 
 I will now go through each challenge, along with the evidence on each website.
 ## Twitter
+### Getting Started
+From the challenge document, we are given the username `sadamana`, the password `s4d4m4n4`, and url [https://twitter-flask.chals.mcpshsf.com/](https://twitter-flask.chals.mcpshsf.com/). We can log in with these credentials, and we are greeted with the following page:
+![entry](entryflag.png)
+Hooray! We got our first flag of `flag{you_found_twitter}`! We can now login using the credentials mentioned above and start looking for more clues.
+
 ### Caesar Cipher
+Scrolling through the tweets, we find this suspicious tweet from Long:
+
+> sw mywsxq kpdob iye pvkq{k_fobi_lkcsm_mkockb_mszrob}
+
+This looks like a caesar cipher, because it looks like each letter was shifted. After using [this website](https://www.dcode.fr/caesar-cipher) to decode it, we get the following message:
+```
+im coming after you flag{a_very_basic_caesar_cipher}
+```
+Very interesting message... We now have a new flag of `flag{a_very_basic_caesar_cipher}` and new suspect of Long. Let's keep looking for more clues.
 
 ### Xor
+Looking through the tweets, we also find this tweet from Corncob:
+```
+I learned about new cryptography technique, anyone want to take a byte?
+08020f09151d5d0a5f035d001a5a1c17311c5e0d051300011e0b424e030f170c0b4e060be281b71d4e041b1d1a4e1e020f170700094e260b0f1c1a061c010d054e190607020b4e27e281b7034e060b1c0b4e0a010700094e0f02024e06071d4e19011c054e08011c4e060703
+```
+This looks like a hex string, but it doesn't decode to anything. However, if we try brute forcing an xor key using [this website](https://cyberchef.org/), we get the following message:
+```
+flag{s3d1m3nt4ry_r0ck} 
+nope, maybe he is just playing Hearthrock while I am here doing all his work
+```
+This gives us a new flag of `flag{s3d1m3nt4ry_r0ck}`. We also suspect Corncob, as he seems angry at Chance for giving him too much work. However, we still need more evidence. 
 
 ### Base64
+This tweet from Karst also looks important:
+```
+dSA9IGthcnN0LCBwYXNzID0gRVNTX2Ywcl90aDNfdzFuCmZsYWd7Y3IzZDVfNHIzX3U1M2Z1MV93MHd9
+```
+Because of the characters in the string, it is probably encoded with Base64. After decoding it with [this website](https://www.base64decode.org/), we get this message:
+```
+u = karst, pass = ESS_f0r_th3_w1n
+flag{cr3d5_4r3_u53fu1_w0w}
+```
+It's a new flag! `flag{cr3d5_4r3_u53fu1_w0w}`. We also got some new credentials for Karst. We can now login with these credentials and look for even more clues. Looking in Karst's direct messages, we find that he messaged himself with his Facebook credentials:
+
+> fb creds so i dont forget username: Karst, password: 3ddy_Curr3nT5
+
+In HSFs, it's important to note any credentials found, as they may be useful later. In this case, we can use these credentials to login to Facebook.
 
 ### Corncob's Website
+Corncob mentions that his credentials on his website  [http://corncobs-sus-website.chals.mcpshsf.com](http://corncobs-sus-website.chals.mcpshsf.com) and that finding them is related to robots. This is a hint that we need to look at the robots.txt file. After looking at the robots.txt file, we find this:
+```
+User-agent: *
+Disallow: flag{domo_arigato}
+User: corncob, pass: L4tk3_M4f14_L0rd_123
+```
+We now have a new flag of `flag{domo_arigato}` and new credentials for Corncob. We can login to Twitter with these credentials and look 
+in Corncob's DMs for more clues. In Corncob's DMs, we find a new [website](https://secret-chat.chals.mcpshsf.com/). Unfortunately, none of our credentials work on this website, so let's save this site for later. 
 
-### Vacation Image
+We also find that Long begged Corncob for laktes, and Corncob refused. This could show that Long has some motive to kill Chance, as chance sells laktes. However, the DMs also show that Chance is Corncob's boss, and Corncob is angry at Chance for making him do too much work. This means Corncob is also a suspect. 
+### Other Clues
+This Tweet from chance looks important:
 
-### Other Tweets
+> i just launched my new cooking blog! Check it out! http://jekyll-blog.chals.mcpshsf.com
+
+This website looks like Chance's cooking blog.  We also find that Long is angry at Chance for not giving him laktes, as he says:
+
+> bruh if i dont get some latkes rn imma throw hands
+
+This could be a motive for Long to kill Chance. In addition, Chance appears to part of latke cartel. We also find another site, [Facebook](https://facebook-django.chals.mcpshsf.com). This site looks like the Facebook site that Karst has credentials for. Let's explore this site for more clues.
 
 ## Facebook
 ### Dead Chance
+Upon logging into Facebook, we find a picture of Chance's dead body with a pan next to it. This image is shown here:
+![Image](chance.jpg)
+There also appears to a fingerprint on the pan. These could be clues to who killed Chance. Let's also look at the metadata of the image. We can do this by running `exiftool` on the image. We get the following output:
+```
+ExifTool Version Number         : 12.40
+File Name                       : chance.jpg
+Directory                       : .
+File Size                       : 361 KiB
+File Modification Date/Time     : 2023:03:25 15:54:35-04:00
+File Access Date/Time           : 2023:03:25 15:59:49-04:00
+File Inode Change Date/Time     : 2023:03:25 15:54:41-04:00
+File Permissions                : -rwxrwxrwx
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+JFIF Version                    : 1.01
+Exif Byte Order                 : Big-endian (Motorola, MM)
+Image Description               : Screenshot
+Orientation                     : Horizontal (normal)
+X Resolution                    : 57
+Y Resolution                    : 57
+Resolution Unit                 : cm
+Software                        : GIMP 2.10.32
+Modify Date                     : 2023:03:07 04:46:43
+Artist                          : ZmxhZ3toZV9kZWFkX29oX25vfQ==
+User Comment                    : Screenshot
+Color Space                     : sRGB
+Exif Image Width                : 1814
+Exif Image Height               : 1364
+GPS Version ID                  : 0.0.0.1
+GPS Latitude Ref                : Unknown (E)
+GPS Longitude Ref               : Unknown (S)
+Subfile Type                    : Reduced-resolution image
+Compression                     : JPEG (old-style)
+Photometric Interpretation      : YCbCr
+Samples Per Pixel               : 3
+Thumbnail Offset                : 593
+Thumbnail Length                : 10216
+Comment                         : Screenshot
+Image Width                     : 1814
+Image Height                    : 1364
+Encoding Process                : Baseline DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
+Image Size                      : 1814x1364
+Megapixels                      : 2.5
+Thumbnail Image                 : (Binary data 10216 bytes, use -b option to extract)
+GPS Latitude                    : 19 deg 54' 36.24" N
+GPS Longitude                   : 155 deg 35' 55.44" E
+GPS Position                    : 19 deg 54' 36.24" N, 155 deg 35' 55.44" E
+```
+The artist field looks suspicious, and is likely base64 encoded. Using this [website](https://www.base64decode.org/), we can decode the string. We get the following flag: `flag{he_dead_oh_no}`. 
 
 ### Corncob's Office
+Scrolling down further, we find a post from Corncob. This post is shown here:
 
+> guys i just wanted to say that my boss is an awful human being he never does any of his own work so i do all the dirty work and ngl im lowkey glad he's gone. Here's his office it's so gross and he just left for another party and i'm here cleaning it up. Thanks for listening to my ted talk. http://chal-host.chals.mcpshsf.com/edited_photo.png
+
+This makes Corncob a bigger suspect, as he is glad that Chance is gone. He also hates Chance for being lazy and giving him all the work. The image he posted is shown here:
+![Image](office.png)
+
+To get more information about this image, let's run strings on it to see if anything pops up. Running `strings office.jpg` and looking for anything that looks like a flag, we find what we are looking for: `flag{n0t3p4d++_15_0ur_s4v10r}`.
 ### Pan Image
+Hubbz also posted a picture of the pan that was next to Chance's body. This image is shown here:
+![Image](pan.png)
+
+This makes Hubbz a suspect, as Chance was killed with a pan. However, we need more evidence before we make a conclusion. Analyzing this image further with `zsteg`, we get the following output:
+```shell
+b1,r,lsb,xy         .. text: "?v7\n\"QBVR@"
+b1,rgb,lsb,xy       .. text: "58:flag{l0v3ly_sup3r_b3st_3nc0d1ng}username: k4r5t_t0p0gr4phy"
+b1,bgr,lsb,xy       .. file: OpenPGP Secret Key
+b2,r,lsb,xy         .. text: "UUUUUUUUUUUUUUUUUUUUUUUUUUUT"
+b2,r,msb,xy         .. text: "u]UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+b2,g,lsb,xy         .. text: "UUUUUUUUUUUUUUUUUUUUUUUUUUUT"
+b2,g,msb,xy         .. text: ["U" repeated 43 times]
+b2,b,lsb,xy         .. text: "UUUUUUUUUUUUUUUUUUUUUUUUUUUT"
+b2,b,msb,xy         .. text: "}WUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+b2,rgb,msb,xy       .. text: ["U" repeated 132 times]
+b2,bgr,msb,xy       .. text: ["U" repeated 132 times]
+b2,abgr,msb,xy      .. text: "wWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+b3,abgr,msb,xy      .. file: MPEG ADTS, layer I, v2, 256 kbps, Monaural
+b4,r,msb,xy         .. text: ["w" repeated 88 times]
+b4,g,msb,xy         .. text: ["w" repeated 87 times]
+b4,b,msb,xy         .. file: MPEG ADTS, layer I, v2, 112 kbps, 24 kHz, JntStereo
+b4,rgb,msb,xy       .. text: ["w" repeated 12 times]
+b4,bgr,msb,xy       .. text: ["w" repeated 12 times]
+```
+This gives us our flag `flag{l0v3ly_sup3r_b3st_3nc0d1ng}` and a username, `k4r5t_t0p0gr4phy`, to store for a later part of the competition.
 
 ### Robot Images
+Unforunately, this challenge actually broke during the competition, so teams only got a partial flag. The challenge was to find the flag in the two images of a robot. Both images show the following robot:
+![Robot](robots.png)
 
-### Fileshare
+Using this command `cmp -l _robots.png chal.png | gawk '{printf "%08X %02X %02X\n", $1, strtonum(0$2), strtonum(0$3)}'` we can find the differences between the two images. This gives us the following output:
+```
+000437E1 1C 66
+00047C41 3B 6C
+0004C07F CD 61
+0004D7F6 85 67
+0005199F 66 7B
+00056869 C2 35
+00059665 5B 75
+0005F418 D8 63
+000614B6 64 68
+00066C6C F0 5F
+0006921B 4D 34
+0006C56D 91 5F
+000738E2 85 63
+000745FB 3B 30
+0007803E 6A 30
+0007C0F6 FF 6C
+00080058 3D 5F
+00084A32 02 70
+0008A15F F0 72
+0008E8D5 2A 30
+00091568 67 6A
+0009636B 94 33
+0009A75F 8D 63
+0009CD2A CA 74
+000A1A94 79 21
+000A5913 25 21
+000A9FBF 23 7D
+000AE8C9 C2 70
+000AFC4F 6D 61
+000B2FCB ED 73
+000B77FA 44 73
+000BDFA5 FB 77
+000BFF5D 32 6F
+000C621B 01 72
+000CA281 AC 64
+000CC987 A9 3A
+000D16D0 74 20
+000D447E 78 79
+000D7434 71 34
+000DBF48 F5 7A
+000E0F99 64 30
+000E5462 B4 30
+000E8466 6A 5F
+000EB14C 7E 74
+000EFBC1 A1 72
+000F4BB6 7D 31
+000F6800 5E 62
+000FAD4E 96 75
+000FF528 6C 74
+00103D23 FA 34
+00106E50 3A 72
+0010BD7E 50 79
+```
+
+The bytes in the third column are the bytes that have been changed. Decoding these updated bytes as ASCII gives us the flag `flag{5uch_4_c00l_pr0j3ct!!}` and a password, `y4z00_tr1but4ry`, to use later.
 
 ### Long's Madlibs
+This post from Long gives a new website to explore:
 
-### Other Posts
+> I made my first website! Go check it out and let me know if you like it http://madlibs.chals.mcpshsf.com
+
+This website is a madlibs game, where you can fill in the blanks and get a story. Because our input is reflected back to us, we should test for a [template injection attack](https://portswigger.net/web-security/server-side-template-injection). Trying the string `{{ 7 + 7 }}` confirms that this is a template injection attack and gives us the template language, Jinja2. Running this payload `{{request.application.__globals__.__builtins__.__import__('os')
+.popen('ls').read()}}` gives us the files on the system:
+```
+flag.txt letter.txt main.py static templates 
+```
+Running `{{request.application.__globals__.__builtins__.__import__('os')
+.popen('cat flag.txt').read()}}` gives us the flag: `flag{th1s_1s_a_t3mp14t3_f0r_fl4sk5_4nd_inj3ct1on5}`. We can also read the file `letter.txt` to get the following message:
+
+> Dear Diary, I can't believe how upset I am right now. I asked Chance for some Latkes and he never responded! I was really looking forward to enjoying those crispy, delicious potato pancakes, and I was practically salivating at the thought of smothering them with sour cream and applesauce. Now, I'm sitting here in my kitchen, feeling sorry for myself, and hungry as can be. I can't stop thinking about those latkes, and how amazing they would have tasted if only I had been able to get my hands on some potatoes. It's not fair, really. I mean, who runs out of latkes? I know it's silly to get so worked up over something as simple as food, but I can't help it. I was really looking forward to those latkes, and now I'm just mad that I didn't get to enjoy them. I guess I'll just sulk in my room and try to forget about those delicious, crispy latkes that I missed out on. I might have to hit something if I don't get those latkes.
+
+This is more evidence that Long is the murderer, as he is so mad at Chance that he would hit something. This could mean that he has a strong enough motive to kill Chance.
+
+### Other Clues
+Lastly, post from Karst gives a filesharing website, [htts://fileshare-flask.chals.mcpshsf.com](https://fileshare-flask.chals.mcpshsf.com). Using the username for the pan image, `k4r5t_t0p0gr4phy`, and the password from the robot images, `y4z00_tr1but4ry`. We can log in and look for more clues. 
 
 ## Chance's Blog
 ### Lockpicking
