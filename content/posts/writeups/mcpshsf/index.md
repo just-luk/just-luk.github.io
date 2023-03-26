@@ -6,6 +6,7 @@ summary: "A detailed walkthrough of all the challenges in MCPSF 2023. It also in
 tags: ["writeups", "ctfs"]
 showReadingTime: false
 showDate: false
+showTableOfContents: false
 ---
 
 ## Challenge Graph
