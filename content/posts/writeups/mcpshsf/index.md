@@ -411,7 +411,7 @@ Upon opening the bike lock, we get the following information:
 flag{l33t_l0ckp1ck1ng_br0}
 the key is ilovelatkesalot!
 ```
-We get a new flag, `flag{l33t_l0ckp1ck1ng_br0}`, and a key, `ilovelatkesalot!`. We can use this key to decrypt the information the blog post.
+We get a new flag, `flag{l33t_l0ckp1ck1ng_br0}`, and a key, `ilovelatkesalot!`. We can use this key to decrypt the information in the blog post.
 
 ### Unknown Encryption
 On the same blog post where the bike lock is mentioned, Chance also mentions that he encrypted his data using the key he locked:
