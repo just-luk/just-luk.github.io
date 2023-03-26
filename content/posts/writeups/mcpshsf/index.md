@@ -366,6 +366,12 @@ Running `{{request.application.__globals__.__builtins__.__import__('os')
 This is more evidence that Long is the murderer, as he is so mad at Chance that he would hit something. This could mean that he has a strong enough motive to kill Chance.
 
 ### Other Clues
+First, looking at the comments on the Robot images, we find that someone stole Hubbz's pan:
+
+> BRUH SOMEONE STOLE MY PAN OMG
+
+This clears Hubbz as a suspect, as the murder weapon was stolen from him.
+
 Lastly, post from Karst gives a filesharing website, [htts://fileshare-flask.chals.mcpshsf.com](https://fileshare-flask.chals.mcpshsf.com). Using the username for the pan image, `k4r5t_t0p0gr4phy`, and the password from the robot images, `y4z00_tr1but4ry`. We can log in and look for more clues. 
 
 ## Chance's Blog
@@ -386,7 +392,7 @@ Upon opening the bike lock, we get the following information:
 flag{l33t_l0ckp1ck1ng_br0}
 the key is ilovelatkesalot!
 ```
-We get a new flag, `flag{l33t_l0ckp1ck1ng_br0}`, and a key, ``ilovelatkesalot!``. We can use this key to decrypt the information the blog post.
+We get a new flag, `flag{l33t_l0ckp1ck1ng_br0}`, and a key, `ilovelatkesalot!`. We can use this key to decrypt the information the blog post.
 
 ### Unknown Encryption
 On the same blog post where the bike lock is mentioned, Chance also mentions that he encrypted his data using the key he locked:
@@ -396,7 +402,7 @@ On the same blog post where the bike lock is mentioned, Chance also mentions tha
 > +eI98T06iP3LBShWNX65XBBY74FNTp0CL2kOzGJzLSMJ1541XQ3g94VCBW0F
 > xnAOB5VyP7hLmdSmTC65rHQmsgihW2GXTXicId27OOuUu/QFidbZ6M=
 
-Chance mentions that he used an "Advanced Encryption Algorithm", which suggests that he used AES. We can use [CyberChef](https://cyberchef.org) to decrypt this data. Using the key from the Lockpicking Challenge, a random IV the mode `AES-256-CBC`, we get:
+Chance mentions that he used an "Advanced Encryption Algorithm", which suggests that he used AES. We can use [CyberChef](https://cyberchef.org) to decrypt this data. Using the key from the Lockpicking Challenge, a random IV, and the mode `AES-256-CBC`, we get:
 ```
 https://drive.google.com/file/d/1sLaQw-kMYGhexxUV12y09RJj_blVLzNz/view?usp=sharing 
 flag{f0ll0w_th3_url!}
@@ -411,7 +417,7 @@ From the blog, we also find this [word document](latke_recipe.docx). Opening thi
 ![carving](docx_carving.png)
 
 ### SQL Log
-The last post on Chance's blog gives us a log file of a site that Chance runs. Considering the earlier messages on Twitter, these logs are probably for the secret chat site. The logs look like this:
+The last post on Chance's blog gives us a log file of a site that Chance runs. Considering the earlier messages on Twitter, these logs are probably for the Secret Chat site. The logs look like this:
 ```shell
 172.21.0.4 - - [14/Mar/2023:00:29:35 +0000] "GET /?user=%27%20ORDER%20BY%201--%20-&pass= HTTP/1.1" 200 224 "-" "Mozilla/5.0 (X11; U; Linux i686; es-ES; rv:1.8.1.2) Gecko/20070220 Firefox/2.0.0.2"
 172.21.0.4 - - [14/Mar/2023:00:29:35 +0000] "GET /?user=%27%20ORDER%20BY%204608--%20-&pass= HTTP/1.1" 200 458 "-" "Mozilla/5.0 (X11; U; Linux i686; es-ES; rv:1.8.1.2) Gecko/20070220 Firefox/2.0.0.2"
@@ -432,7 +438,7 @@ AND (SELECT 7410 FROM (SELECT(SLEEP(1-(IF(ORD(MID((SELECT
 IFNULL(CAST(username AS NCHAR),0x20) FROM admin_site.users 
 ORDER BY id LIMIT 1,1),8,1))>113,0,1)))))OEDl) AND 'ogSF'=%
 ```
-This query is checking if the the 8th character of the username is greater than 113. If it is, it will sleep for 1 second. If it isn't, it will sleep for 0 seconds. Decoding more of the logs, we see that the attack checks if a character is greater than another number. Then, it decrease the other number until the character is found. After that, it confirms if its guess is correct by checking if it not equal to the character. Using this information, we can find the information stolen by looking for any != signs in the logs:
+This query is checking if the the 8th character of the username is greater than 113. If it is, it will sleep for 1 second. Decoding more of the logs, we see that the attack checks if a character is greater than another number. Then, it decrease the other number until the character is found. After that, it confirms if its guess is correct by checking if it not equal to the character. By looking for any `!=` signs in the logs, we can find the stolen information:
 ```python
 from urllib.parse import unquote
 
@@ -452,22 +458,102 @@ for line in lines:
             decoded_data += chr(int(temp))
 print(decoded_data)
 ```
-This gives us the flag `flag{l33t_l0gs_br0}` and a username `chance` and password `mhm_p0t4t0es`. We can use these credentials to log into the Secret Chat site.
+This gives us the flag `flag{l33t_l0gs_br0}`, a username `chance`, and a password `mhm_p0t4t0es`. We can use these credentials to log into the Secret Chat site.
 
 ## Fileshare
 Using the information (username `k4r5t_t0p0gr4phy` and password `y4z00_tr1but4ry`) retrived from Facebook earlier, we look at the files on the Fileshare.
 ### Encrypted Zip
-We find a zipfile that is encrypted but we don't know the password. There is also a wordlist in the same directory, suggesting that the password is on the wordlist. Therefore, we can use the `fcrackzip` tool to crack the password using the wordlist:
+We find a zipfile that is encrypted but we don't know the password. There is also a wordlist in the same directory, suggesting that the password is on the wordlist. Therefore, we can use [John The Ripper](https://www.openwall.com/john/) to crack the password using the wordlist:
 ```shell
-fcrackzip -D -p wordlist.txt -u evidence.zip
+zip2john evidence.zip > hash.txt
+john hash.txt --wordlist=wordlist.txt
 ```
+This gives us the password `mischance` which we can use to unzip the file. Inside, we find a file called `ChanceEssay.pdf` which has the flag `flag{h3_r34lly_turn3d_th4t_1n_t0_st4nf0rd}`. We also find the file `evidence.txt` which contains the following:
 
+> Good riddance! Chance deserved to go! Why couldn’t he just give me latkes? Who needs to be so protective of latkes?!?!? If he had just given me latkes in the first time, he would still be here. But how am I supposed to get my latkes now??? Maybe I’ll bug CornCob some more. If he doesn’t agree...
+
+This is a clear confession from the murderer. It also clears Corncob, as the murderer want to "bug" Corncob. The killer is likely Long, as the motives in this file align with Long's motives. In this folder, we also find some pictures of Chance. So sad to see him go :(
+
+![Chance](chance_profile.png)
 
 ### Spectrogram
+There is also a wav file on the Fileshare. Playing the file hurts your ears and doesn't give any info, so let's try looking at it's spectrogram. The spectrogram is a way to hide messages in an audio file. Opening the file in [Sonic Visualizer](https://sonicvisualiser.org/), we get this spectrogram:
+
+![Spectrogram](spectrogram.png)
+
+This gives us the flag `flag{mus1c_m4j0r5_c4n_h4ck_t00}`
 
 ### PCAP Logins
+Another file on the Fileshare is `login.pcap`. To analyze it, we can open it in [Wireshark](https://www.wireshark.org/). Looking at the HTTP request, we see a lot of 401 Unauthorized responses. However, there is one 200 OK response and clicking 'Follow Stream' on this response gives us a username and password:
+
+```
+username=long&password=gonl321!!!&666c6167=666c61677b62797465735f6f7665725f7468655f776972657d
+```
+There is also a hexstring at the end of request. Decoding this hexstring gives us the flag `flag{bytes_over_the_wires}`. Trying this username and password on all the websites we have found so far, we can log into the Twitter as Long. 
+
+#### Twitter pt. 2 
+Inside Long's DMs we find that he is begging for latkes from Corncob.
+
+> yo CornCob where are my latkes. CORNCOB GIMME YOUR LATKES
+
+This again shows why Long likely killed Chance; he didn't give Long his latkes. We also find that he sent a picture to Hubbz showing himself on vacation.
+
+![vacation](vacation.jpg)
+
+Using `exiftool` to analyze this image further, we get the following output:
+
+```
+ExifTool Version Number         : 12.40
+File Name                       : vacation.jpg
+Directory                       : .
+File Size                       : 58 KiB
+File Modification Date/Time     : 2023:03:25 22:58:53-04:00
+File Access Date/Time           : 2023:03:25 23:01:20-04:00
+File Inode Change Date/Time     : 2023:03:25 22:58:53-04:00
+File Permissions                : -rwxrwxrwx
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+JFIF Version                    : 1.01
+Exif Byte Order                 : Big-endian (Motorola, MM)
+X Resolution                    : 144
+Y Resolution                    : 144
+Resolution Unit                 : inches
+Artist                          : ZmxhZ3t3aDR0JzVfMW5fdGgzX2wwYzR0MTBuP30=
+User Comment                    : Screenshot
+Exif Image Width                : 998
+Exif Image Height               : 560
+GPS Version ID                  : 0.0.0.1
+GPS Latitude Ref                : Unknown (E)
+GPS Longitude Ref               : Unknown (S)
+Image Width                     : 998
+Image Height                    : 560
+Encoding Process                : Baseline DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
+Image Size                      : 998x560
+Megapixels                      : 0.559
+GPS Latitude                    : 19 deg 54' 36.96" N
+GPS Longitude                   : 155 deg 35' 56.17" E
+GPS Position                    : 19 deg 54' 36.96" N, 155 deg 35' 56.17" E
+```
+
+Again, there is a base64 string in the Artist field. Decoding this gives us the flag `flag{wh4t'5_1n_th3_l0c40n10n?}`. This is a hint that we should look at the location of the image. Using [Google Maps](https://www.google.com/maps), we can find the location of the image.
+
+![Location](location.png)
+
+This is in the middle of the ocean, which shows that Long is lying about being on vacation. Therefore, it is still possible that he is the murderer.
 
 ### Broken PNG
+Lastly, we find a photo that won't open. Downloading the file and opening it in [HexEdit](https://hexed.it/), we find that the first byte of the file is not `89`, which is required by the PNG standard. Fixing this and saving the file gives us this image:
+
+![fingerprints](fingerprints.png)
+
+This image gives us the flag `flag{4rch35_l00p5_wh0rl5}` and some fingerprints. This can be used with the fingerprints found on the pan that we got from Facebook. By comparing the two, we can confirm that Long is the murderer.
+
+![long finger](long_finger.png)
+![pan finger](pan_finger.png)
 
 ## Virtual Machine
 ### Chrome History
