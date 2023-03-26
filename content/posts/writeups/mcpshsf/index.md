@@ -558,7 +558,7 @@ This image gives us the flag `flag{4rch35_l00p5_wh0rl5}` and some fingerprints. 
 ## Virtual Machine
 On the Fileshare site, we also find a tarfile of a Virtual Machine. Inside this VM, we find two zip files: `history-backup.zip` and `git-backup.zip`.
 ### Chrome History
-Unzipping `history-backup.zip` gives us a chrome history. Using [this tool](https://www.nirsoft.net/utils/chrome_cache_view.html) we can look at all the URLs in the Cache. Looking through the urls, we find this link to somes images: [https://imgur.com/a/6pVCTsY](https://imgur.com/a/6pVCTsY). This again proves that Long is the killer, as he is literally swimging the pan at Chance. 
+Unzipping `history-backup.zip` gives us the history of a Chrome browsing session. Using [this tool](https://www.nirsoft.net/utils/chrome_cache_view.html) we can look at all the URLs in the browser cache. Looking through the urls, we find this link to some images: [https://imgur.com/a/6pVCTsY](https://imgur.com/a/6pVCTsY). This again proves that Long is the killer, as he is literally swinging the pan at Chance. 
 
 ![pan_swing](pan_swing.jpeg)
 
@@ -615,8 +615,158 @@ This clears up the mystery of why Nick was so angry at Chance. He was angry beca
 
 ### Keyboard PCAP
 
+Scrolling furhter through the chat, we also find a link to a [pcap file](http://chal-host.chals.mcpshsf.com/keylog.pcap). Upon opening this file in [Wireshark](https://www.wireshark.org/), we can see that there are a lot of USB packets.
+
+![pcap](usb_packets.png)
+
+Looking at an individual packet, we can see that keystrokes were sent. We can even see that the first key pressed was a capital `D`, as the d key and the shift key were pressed.
+
+![keystroke](keystroke.png)
+
+We could go through each packet and try to figure out what was typed, but this would take a long time. Instead, let's write a script to do it for us. First, let's extract all the usb payloads using tshark.
+
+```
+tshark -r keylog.pcap -T fields -e usbhid.data > usb_payloads.txt
+```
+
+Then, we can write a script to convert the payloads to ASCII.
+
+```python
+with open("usb_payloads.txt", "r") as f:
+    lines = f.readlines()
+
+mapping = {
+    '04': ('a', 'A'), 
+    '05': ('b', 'B'), 
+    '06': ('c', 'C'), 
+    '07': ('d', 'D'), 
+    '08': ('e', 'E'), 
+    '09': ('f', 'F'), 
+    '0a': ('g', 'G'), 
+    '0b': ('h', 'H'), 
+    '0c': ('i', 'I'), 
+    '0d': ('j', 'J'),
+    '0e': ('k', 'K'), 
+    '0f': ('l', 'L'), 
+    '10': ('m', 'M'), 
+    '11': ('n', 'N'),
+    '12': ('o', 'O'),
+    '13': ('p', 'P'),
+    '14': ('q', 'Q'),
+    '15': ('r', 'R'),
+    '16': ('s', 'S'),
+    '17': ('t', 'T'),
+    '18': ('u', 'U'),
+    '19': ('v', 'V'),
+    '1a': ('w', 'W'),
+    '1b': ('x', 'X'),
+    '1c': ('y', 'Y'),
+    '1d': ('z', 'Z'), 
+    '1e': ('1', '!'), 
+    '1f': ('2', '@'), 
+    '20': ('3', '#'), 
+    '21': ('4', '$'), 
+    '22': ('5', '%'), 
+    '23': ('6', '^'), 
+    '24': ('7', '&'), 
+    '25': ('8', '*'), 
+    '26': ('9', '('), 
+    '27': ('0', ')'), 
+    '28': ('\n', '\n'), 
+    '29': ('[ESC]', '[ESC]'), 
+    '2a': ('[BACKSPACE]', '[BACKSPACE]'), 
+    '2b': ('\t', '\t'), 
+    '2c': (' ', ' '), 
+    '2d': ('-', '_'), 
+    '2e': ('=', '+'), 
+    '2f': ('[', '{'), 
+    '30': (']', '}'), 
+    '31': ('\\', '|'), 
+    '32': ('`', '~'),
+    '33': (';', ':'), 
+    '34': ("'", '"'),
+    '36': (',', '<'), 
+    '37': ('.', '>'), 
+    '38': ('/', '?'), 
+    '39': ('[CAPSLOCK]', '[CAPSLOCK]')
+}
+
+message = ''
+for line in lines:
+    stripped_line = line.strip('\n')
+    if len(stripped_line) == 0 or stripped_line == '0000000000000000':
+        continue
+    caps = 0
+    if stripped_line[1] == '2':
+        caps = 1
+    decoded_stroke = mapping[stripped_line[4:6]][caps]
+    if(decoded_stroke == '[BACKSPACE]'):
+        message = message[:-1]
+    else:
+        message += decoded_stroke
+print(message)
+```
+
+Running this script gives us the following message:
+
+> Dear Chance, I really miss you. I know you're dead and can't read this but I just wanted to tell you how I feel. I'm sorry if I ever made you feel like a bad friend. You were one my BFFs and it's going to be really hard without you. From, corncob
+> flag{b3_c4r3ful_0f_wh4t_y0u_typ3...}
+
+What Corncob typed further proves that he is not the murderer. He feels grief over Chance's death and actually misses Chance. We also got another flag from this message: `flag{b3_c4r3ful_0f_wh4t_y0u_typ3...}`
+
 ### Memory Dump
+Nick says he was drawing something when his computer crashed. He then took this [memory dump](https://drive.google.com/file/d/1Twp_wsiyxExlnY7qKvWnJh0w2qRQ4wND/view). First, let's determine what processes were running with [Volatility3](https://github.com/volatilityfoundation/volatility3). Running the command `python vol.py -f memory.dmp windows.pslist.PsList` gives us this list of processes:
+
+```
+PID     PPID    ImageFileName   Offset(V)       Threads Handles SessionId       Wow64   CreateTime      ExitTime       File output
+
+4       0       System  0x84133188      84      488     N/A     False   2023-03-11 02:06:11.000000      N/A     Disabled
+228     4       smss.exe        0x919b1140      2       29      N/A     False   2023-03-11 02:06:11.000000      N/A    Disabled
+300     292     csrss.exe       0x85cbf3a0      9       370     0       False   2023-03-11 02:06:12.000000      N/A    Disabled
+348     292     wininit.exe     0x841ae1d8      3       76      0       False   2023-03-11 02:06:13.000000      N/A    Disabled
+360     340     csrss.exe       0x841ae860      8       185     1       False   2023-03-11 02:06:13.000000      N/A    Disabled
+400     340     winlogon.exe    0x85cd4d20      3       115     1       False   2023-03-11 02:06:13.000000      N/A    Disabled
+444     348     services.exe    0x85ce4558      10      213     0       False   2023-03-11 02:06:13.000000      N/A    Disabled
+452     348     lsass.exe       0x85ce6628      7       560     0       False   2023-03-11 02:06:13.000000      N/A    Disabled
+460     348     lsm.exe 0x85ce8650      10      141     0       False   2023-03-11 02:06:13.000000      N/A     Disabled
+564     444     svchost.exe     0x85d349e0      10      352     0       False   2023-03-11 02:06:13.000000      N/A    Disabled
+632     444     svchost.exe     0x93dc8bf8      7       252     0       False   2023-03-11 02:06:13.000000      N/A    Disabled
+684     444     svchost.exe     0x85cd5770      18      474     0       False   2023-03-11 02:06:13.000000      N/A    Disabled
+804     444     svchost.exe     0x85da2a38      13      311     0       False   2023-03-11 02:06:14.000000      N/A    Disabled
+844     444     svchost.exe     0x85db1280      13      331     0       False   2023-03-11 02:06:14.000000      N/A    Disabled
+888     444     svchost.exe     0x85dbf030      35      945     0       False   2023-03-11 02:06:14.000000      N/A    Disabled
+940     684     audiodg.exe     0x85d5e030      5       120     0       False   2023-03-11 02:06:14.000000      N/A    Disabled
+1108    444     svchost.exe     0x85e12510      19      498     0       False   2023-03-11 02:06:15.000000      N/A    Disabled
+1204    444     spoolsv.exe     0x85e81510      13      268     0       False   2023-03-11 02:06:15.000000      N/A    Disabled
+1240    444     svchost.exe     0x85e86030      19      321     0       False   2023-03-11 02:06:15.000000      N/A    Disabled
+1324    444     svchost.exe     0x85e72030      10      145     0       False   2023-03-11 02:06:16.000000      N/A    Disabled
+1608    444     svchost.exe     0x8551a568      6       91      0       False   2023-03-11 02:06:17.000000      N/A    Disabled
+1940    444     taskhost.exe    0x84bda030      9       246     1       False   2023-03-11 02:06:44.000000      N/A    Disabled
+1984    804     dwm.exe 0x8557f250      3       71      1       False   2023-03-11 02:06:44.000000      N/A     Disabled
+2000    1976    explorer.exe    0x85581d20      24      778     1       False   2023-03-11 02:06:44.000000      N/A    Disabled
+980     444     SearchIndexer.  0x85d92d20      13      623     0       False   2023-03-11 02:06:51.000000      N/A    Disabled
+284     444     wmpnetwk.exe    0x86072ab8      9       207     0       False   2023-03-11 02:07:01.000000      N/A    Disabled
+1280    444     svchost.exe     0x85eeea68      14      200     0       False   2023-03-11 02:07:01.000000      N/A    Disabled
+3128    444     mscorsvw.exe    0x85e9b468      6       76      0       False   2023-03-11 02:08:17.000000      N/A    Disabled
+3152    444     sppsvc.exe      0x8612ed20      4       139     0       False   2023-03-11 02:08:17.000000      N/A    Disabled
+3192    444     svchost.exe     0x84bddaf0      12      341     0       False   2023-03-11 02:08:17.000000      N/A    Disabled
+2548    444     msiexec.exe     0x84566d20      5       273     0       False   2023-03-11 02:13:45.000000      N/A    Disabled
+2024    2000    mspaint.exe     0x84260b70      7       143     1       False   2023-03-11 02:20:20.000000      N/A    Disabled
+1548    444     svchost.exe     0x8451b9b0      7       105     0       False   2023-03-11 02:20:20.000000      N/A    Disabled
+```
+
+Looking through these processes, mspaint appears to be what Nick was drawing in. Let's examine the process by extracting it from the memory dump. We can do this with this command: ` python vol.py -f memory.dmp windows.memmap.Memmap --pid 2024 --dump`. This will create a file called `pid.2024.dmp` in the current directory. 
+
+We can then use [Gimp](https://www.gimp.org/) to extract what Nick was drawing. Renaming the file to `pid.2024.data` and opening it in Gimp, we can adjust the offset, width, and height until we get a viewable image. In this case, an offset of 10652870, width of 960, and height of 350 works.
+
+![gimp](gimp.png)
+
+Cropping and the image vertically, we get the following image:
+
+![painting](painting.png)
+
+This gives us the flag `flag{wh0_us3s_w1nd0ws7??}` and some more information about the Nick. He was drawing a heart for Chance, showing that he cared about him. This means that Nick likely did not murder Chance.
 
 ## Conclusion
 
-Based on all of the evidence, Long is clearly the murderer. Chance's cartel members don't have enough motive to kill him, and actualy cared about him. While Corncob has some motive, there is more evidence suggesting Long was the murderer. He was angry at Chance for not giving him laktes, as shown by his diary and posts on Twitter. His fingerprints line up with the fingerprints on the murder weapon, and there is a written confession.
+Based on all of the evidence, Long is clearly the murderer. Chance's cartel members don't have enough motive to kill him, and actualy cared about him. While Corncob has some motive, there is more evidence suggesting Long was the murderer. Also, Corncob actually feels grief over Chance's death. Long was angry at Chance for not giving him latkes, as shown by his diary and posts on Twitter. His fingerprints line up with the fingerprints on the murder weapon, there is a written confession, and picture of Long murdering Chance. 
