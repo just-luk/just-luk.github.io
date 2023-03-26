@@ -607,7 +607,7 @@ for binary_string in binary_strings:
     print(chr(int(binary_string, 2)), end="")
 ```
 
-Pasting the message into `invisible.txt` and running the script nets us the flag `flag{b00_im_a_gh0st_4nd_y0u_c4nt_s33_m3}` and Nick's secret message:
+Pasting the message into `invisible.txt` and running the script nets us the flag `flag{b00_im_a_gh0st_4nd_y0u_c4nt_s33_m3}` and Bob's secret message:
 
 > chance is so stupid lololol. probably shouldn't even been in this cartel tbh. but i still love him bc he's so nice <3
 
