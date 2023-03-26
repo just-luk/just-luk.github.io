@@ -611,7 +611,7 @@ Pasting the message into `invisible.txt` and running the script nets us the flag
 
 > chance is so stupid lololol. probably shouldn't even been in this cartel tbh. but i still love him bc he's so nice <3
 
-This clears up the mystery of why Nick was so angry at Chance. He was angry because Chance was stupid and didn't sell enough latkes. This is not enough to kill Chance, however, as Nick still cared about him.
+This clears up the mystery of why Bob was so angry at Chance. He was angry because Chance was stupid and didn't sell enough latkes. This is not enough to kill Chance, however, as Bob still cared about him.
 
 ### Keyboard PCAP
 
