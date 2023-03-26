@@ -784,7 +784,7 @@ Cropping and the flipping the image vertically, we get the following painting:
 
 ![painting](painting.png)
 
-This gives us the flag `flag{wh0_us3s_w1nd0ws7??}` and some more information about the Nick. He was drawing a heart for Chance, showing that he cared about him. This means that Nick likely did not murder Chance.
+This gives us the flag `flag{wh0_us3s_w1nd0ws7??}` and some more information about Nick. He was drawing a heart for Chance, showing that he cared about him. This means that Nick likely did not murder Chance.
 
 ## Conclusion
 
