@@ -556,9 +556,22 @@ This image gives us the flag `flag{4rch35_l00p5_wh0rl5}` and some fingerprints. 
 ![pan finger](pan_finger.png)
 
 ## Virtual Machine
+On the Fileshare site, we also find a tarfile of a Virtual Machine. Inside this VM, we find two zip files: `history-backup.zip` and `git-backup.zip`.
 ### Chrome History
+Unzipping `history-backup.zip` gives us a chrome history. Using [this tool](https://www.nirsoft.net/utils/chrome_cache_view.html) we can look at all the URLs in the Cache. Looking through the urls, we find this link to somes images: [https://imgur.com/a/6pVCTsY](https://imgur.com/a/6pVCTsY). This again proves that Long is the killer, as he is literally swimging the pan at Chance. 
+
+![pan_swing](pan_swing.jpeg)
 
 ### Git Repo
+We also find a git repo in `git-backup.zip`. Opening the directory and listing all the files shows nothing. However, if we run `git log --graph --decorate --pretty=oneline --abbrev-commit` we find that there were a lot of updates to `flag.txt` and then the file was deleted. 
+
+![updates](updates.png)
+
+Using `git checkout` to look at the previous commits, we find that the information is split up into different commits. By going through each commit, we can get the flag `flag{g1t_r34ss3mbly}` and a confession from Long.
+
+> In case you didn't know, I did it >:) --Long
+
+This proves what our previous evidence hinted at: Long murdered Chance for not giving him latkes.
 
 ## Secret Chat
 ### Invisible Message
