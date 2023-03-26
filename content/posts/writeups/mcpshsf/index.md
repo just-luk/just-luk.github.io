@@ -574,7 +574,44 @@ Using `git checkout` to look at the previous commits, we find that the informati
 This proves what our previous evidence hinted at: Long murdered Chance for not giving him latkes.
 
 ## Secret Chat
+After getting Chance's credentials from the log file on his blog (username: `chance`, password: `mhm_p0t4t0es`), we can log into the [secret chat](https://secret-chat.chals.mcpshsf.com/). This chat appears to be a group conversation between various members of the Latke Cartel. They appear to be angry at chance for not selling enough latkes.
+
+> you need to up your latkes sales
+> the cartel is LOSING money!!!
+
+While this makes the other cartel members suspicious, we should look further through the chat to see if they have enough motive to kill Chance.
 ### Invisible Message
+Looking through the chat, we find this message:
+
+> Nulla pellentesque dignissim enim sit amet venenatis urna cursus eget. Aliquam purus sit amet luctus venenatis lectus. Pellentesque habitant morbi tristique senectus et netus et. Faucibus a pellentesque sit amet. Aliquet bibendum enim facilisis gravida neque convallis a. Ut placerat orci nulla pellentesque. Nisi vitae suscipit tellus mauris a diam maecenas sed enim. Hac habitasse platea dictumst quisque sagittis. Tempor orci dapibus ultrices in iaculis nunc sed. A scelerisque purus semper eget.
+
+This message doesn't seem to contain any information, but if copy it and paste into [HexEdit](https://hexed.it/), we can see that there are invisible characters at the end of the message. 
+
+![inivisible.png](invisible.png)
+
+In particular, two invisible characters appear at the end of the message: `E1 9E B5` and `E1 A0 8E`. This indicates that a message was encoded in binary. We can convert the first invisible character to a 1 and the second to a 0, and then convert the binary to ASCII to get the flag. This can be done through this script:
+
+```python
+with open("invisible.txt", "rb") as f:
+    text = f.read().decode("utf-8")
+text_chars = list(text)
+binary_chars = ""
+for char in text_chars:
+    if ord(char) == 6069:
+        binary_chars += "0"
+    elif ord(char) == 6158:
+        binary_chars += "1"
+
+binary_strings = [binary_chars[i:i+8] for i in range(0, len(binary_chars), 8)]
+for binary_string in binary_strings:
+    print(chr(int(binary_string, 2)), end="")
+```
+
+Pasting the message into `invisible.txt` and running the script nets us the flag `flag{b00_im_a_gh0st_4nd_y0u_c4nt_s33_m3}` and Nick's secret message:
+
+> chance is so stupid lololol. probably shouldn't even been in this cartel tbh. but i still love him bc he's so nice <3
+
+This clears up the mystery of why Nick was so angry at Chance. He was angry because Chance was stupid and didn't sell enough latkes. This is not enough to kill Chance, however, as Nick still cared about him.
 
 ### Keyboard PCAP
 
