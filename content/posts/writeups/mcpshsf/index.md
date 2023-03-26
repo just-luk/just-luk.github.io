@@ -391,7 +391,7 @@ First, looking at the comments on the Robot images, we find that someone stole H
 
 This clears Hubbz as a suspect, as the murder weapon was stolen from him.
 
-Lastly, post from Karst gives a filesharing website, [htts://fileshare-flask.chals.mcpshsf.com](https://fileshare-flask.chals.mcpshsf.com). Using the username for the pan image, `k4r5t_t0p0gr4phy`, and the password from the robot images, `y4z00_tr1but4ry`. We can log in and look for more clues. 
+Lastly, a post from Karst gives a filesharing website, [htts://fileshare-flask.chals.mcpshsf.com](https://fileshare-flask.chals.mcpshsf.com). Using the username for the pan image, `k4r5t_t0p0gr4phy`, and the password from the robot images, `y4z00_tr1but4ry`. We can log in and look for more clues. 
 
 ## Chance's Blog
 Before we look at the filesharing site, let's go back and investigate Chance's blog that he posted to Twitter.
