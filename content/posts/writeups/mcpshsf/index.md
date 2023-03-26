@@ -615,7 +615,7 @@ This clears up the mystery of why Bob was so angry at Chance. He was angry becau
 
 ### Keyboard PCAP
 
-Scrolling furhter through the chat, we also find a link to a [pcap file](http://chal-host.chals.mcpshsf.com/keylog.pcap). Upon opening this file in [Wireshark](https://www.wireshark.org/), we can see that there are a lot of USB packets.
+Scrolling further through the chat, we also find a link to a [pcap file](http://chal-host.chals.mcpshsf.com/keylog.pcap). Upon opening this file in [Wireshark](https://www.wireshark.org/), we can see that there are a lot of USB packets.
 
 ![pcap](usb_packets.png)
 
