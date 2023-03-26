@@ -1,5 +1,5 @@
 ---
-title: "MCPSHSF 2023 Writeup"
+title: "MCPS HSF 2023 Writeup"
 draft: false
 description: "A walkthrough of all the challenges in MCPSF 2023"
 summary: "A detailed walkthrough of all the challenges in MCPSF 2023. It also includes who killed Chance..."
@@ -7,10 +7,29 @@ tags: ["writeups", "ctfs"]
 showReadingTime: false
 showDate: false
 ---
+## Quick Note
+
+MCPS HSF (Montgomery County Public Schools High School Forensics) is a CTF competition for high school students in Montgomery County, Maryland. This year, it was held on March 14th, 2023. All challenges were generated using [chalgen](https://github.com/CTFg/chalgen), a tool we wrote to generate CTF challenges. If you want to see the source code for this competition, visit the [competitions/mcpshsf-2023](https://github.com/CTFg/chalgen/tree/master/competitions/mcpshsf-2023) folder. The competition also used [CTFg](https://github.com/CTFg/CTFg), a custom web application we wrote for HSFs, to allow competitors to connect and enter evidence. If you like these types of competitions, please give us a star on GitHub! 
+
+{{< rawhtml >}}
+<div class="flex flex-row justify-center items-center">
+<h4>CTFg</h4>
+<h1 class="opacity-0">fillertextfil</h1>
+<h4>Chalgen</h4>
+</div>
+<div>
+<div class="flex flex-row justify-center items-center">
+<a href="https://github.com/CTFg/CTFg"><img src="https://img.shields.io/github/stars/CTFg/CTFg?style=for-the-badge&logo=Github"/></a>
+<h1 class="opacity-0">fillerte</h1>
+<a href="https://github.com/CTFg/chalgen"><img src="https://img.shields.io/github/stars/CTFg/chalgen?style=for-the-badge&logo=Github"/></a>
+</div>
+{{< /rawhtml >}}
+
+The challenges were all based on real-world forensics challenges, but with a twist. The twist was that the challenges were all based on the same story, and the challenges were all interconnected. The goal was to solve all the challenges and figure out who killed Chance. 
 
 ## Challenge Graph
 
-Here's a graph of all the challenges for MCPSHSF 2023:
+Here's a graph of all the challenges for MCPS HSF 2023:
 {{< rawhtml >}}
 <script src="//unpkg.com/force-graph"></script>
 <script src="//unpkg.com/d3-quadtree"></script>
@@ -137,7 +156,7 @@ Scrolling through the tweets, we find this suspicious tweet from Long:
 
 > sw mywsxq kpdob iye pvkq{k_fobi_lkcsm_mkockb_mszrob}
 
-This looks like a caesar cipher, because it looks like each letter was shifted. After using [this website](https://www.dcode.fr/caesar-cipher) to decode it, we get the following message:
+This text was probably encrypted with a Caesar cipher, because it looks like each letter was shifted. After using [this website](https://www.dcode.fr/caesar-cipher) to decode it, we get the following message:
 ```
 im coming after you flag{a_very_basic_caesar_cipher}
 ```
@@ -761,7 +780,7 @@ We can then use [Gimp](https://www.gimp.org/) to extract what Nick was drawing. 
 
 ![gimp](gimp.png)
 
-Cropping and the image vertically, we get the following image:
+Cropping and the flipping the image vertically, we get the following painting:
 
 ![painting](painting.png)
 
