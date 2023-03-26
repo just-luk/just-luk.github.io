@@ -457,7 +457,7 @@ AND (SELECT 7410 FROM (SELECT(SLEEP(1-(IF(ORD(MID((SELECT
 IFNULL(CAST(username AS NCHAR),0x20) FROM admin_site.users 
 ORDER BY id LIMIT 1,1),8,1))>113,0,1)))))OEDl) AND 'ogSF'=%
 ```
-This query is checking if the the 8th character of the username is greater than 113. If it is, it will sleep for 1 second. Decoding more of the logs, we see that the attack checks if a character is greater than another number. Then, it decrease the other number until the character is found. After that, it confirms if its guess is correct by checking if it not equal to the character. By looking for any `!=` signs in the logs, we can find the stolen information:
+This query is checking if the the 8th character of the username is greater than 113. If it is, it will sleep for 1 second. Decoding more of the logs, we see that the attack checks if a character is greater than a number. Then, it decreases that number until the character is found. After that, the attack confirms if its guess is correct by checking if it not equal to the character. By looking for any != signs in the logs, we can find the stolen information:
 ```python
 from urllib.parse import unquote
 
@@ -558,7 +558,7 @@ GPS Longitude                   : 155 deg 35' 56.17" E
 GPS Position                    : 19 deg 54' 36.96" N, 155 deg 35' 56.17" E
 ```
 
-Again, there is a base64 string in the Artist field. Decoding this gives us the flag `flag{wh4t'5_1n_th3_l0c40n10n?}`. This is a hint that we should look at the location of the image. Using [Google Maps](https://www.google.com/maps), we can find the location of the image.
+Again, there is a base64 string in the Artist field. Decoding this gives us the flag `flag{wh4t'5_1n_th3_l0c4t10n?}`. This is a hint that we should look at the location of the image. Using [Google Maps](https://www.google.com/maps), we can find the location of the image.
 
 ![Location](location.png)
 
@@ -569,7 +569,7 @@ Lastly, we find a photo that won't open. Downloading the file and opening it in 
 
 ![fingerprints](fingerprints.png)
 
-This image gives us the flag `flag{4rch35_l00p5_wh0rl5}` and some fingerprints. This can be used with the fingerprints found on the pan that we got from Facebook. By comparing the two, we can confirm that Long is the murderer.
+This image gives us the flag `flag{4rch35_l00p5_wh0rl5}` and some fingerprints. These can be used with the fingerprint found on the pan that we got earlier. By comparing the fingerprints, we can confirm that Long is the murderer.
 
 ![long finger](long_finger.png)
 ![pan finger](pan_finger.png)
@@ -577,16 +577,16 @@ This image gives us the flag `flag{4rch35_l00p5_wh0rl5}` and some fingerprints. 
 ## Virtual Machine
 On the Fileshare site, we also find a tarfile of a Virtual Machine. Inside this VM, we find two zip files: `history-backup.zip` and `git-backup.zip`.
 ### Chrome History
-Unzipping `history-backup.zip` gives us the history of a Chrome browsing session. Using [this tool](https://www.nirsoft.net/utils/chrome_cache_view.html) we can look at all the URLs in the browser cache. Looking through the urls, we find this link to some images: [https://imgur.com/a/6pVCTsY](https://imgur.com/a/6pVCTsY). This again proves that Long is the killer, as he is literally swinging the pan at Chance. 
+Unzipping `history-backup.zip` gives us the history of a Chrome browsing session. Using [this tool](https://www.nirsoft.net/utils/chrome_cache_view.html), we can look at all the URLs in the browser cache. Looking through the urls, we find this link to some images: [https://imgur.com/a/6pVCTsY](https://imgur.com/a/6pVCTsY). This again proves that Long is the killer, as he is literally swinging the pan at Chance. 
 
 ![pan_swing](pan_swing.jpeg)
 
 ### Git Repo
-We also find a git repo in `git-backup.zip`. Opening the directory and listing all the files shows nothing. However, if we run `git log --graph --decorate --pretty=oneline --abbrev-commit` we find that there were a lot of updates to `flag.txt` and then the file was deleted. 
+We also find a git repo in `git-backup.zip`. Opening the directory and listing all the files shows nothing. However, if we run `git log --graph --decorate --pretty=oneline --abbrev-commit`, we find that there were a lot of updates to `flag.txt` and then the file was deleted. 
 
 ![updates](updates.png)
 
-Using `git checkout` to look at the previous commits, we find that the information is split up into different commits. By going through each commit, we can get the flag `flag{g1t_r34ss3mbly}` and a confession from Long.
+Using `git checkout` to look at the previous commits, we see that the information is split up into different commits. By going through each commit, we can get the flag `flag{g1t_r34ss3mbly}` and a confession from Long.
 
 > In case you didn't know, I did it >:) --Long
 
@@ -604,7 +604,7 @@ Looking through the chat, we find this message:
 
 > Nulla pellentesque dignissim enim sit amet venenatis urna cursus eget. Aliquam purus sit amet luctus venenatis lectus. Pellentesque habitant morbi tristique senectus et netus et. Faucibus a pellentesque sit amet. Aliquet bibendum enim facilisis gravida neque convallis a. Ut placerat orci nulla pellentesque. Nisi vitae suscipit tellus mauris a diam maecenas sed enim. Hac habitasse platea dictumst quisque sagittis. Tempor orci dapibus ultrices in iaculis nunc sed. A scelerisque purus semper eget.
 
-This message doesn't seem to contain any information, but if copy it and paste into [HexEdit](https://hexed.it/), we can see that there are invisible characters at the end of the message. 
+This message doesn't seem to contain any information, but if we copy and paste and it into [HexEdit](https://hexed.it/), we can see that there are invisible characters at the end of the message. 
 
 ![inivisible.png](invisible.png)
 
