@@ -589,7 +589,7 @@ This message doesn't seem to contain any information, but if copy it and paste i
 
 ![inivisible.png](invisible.png)
 
-In particular, two invisible characters appear at the end of the message: `E1 9E B5` and `E1 A0 8E`. This indicates that a message was encoded in binary. We can convert the first invisible character to a 1 and the second to a 0, and then convert the binary to ASCII to get the flag. This can be done through this script:
+In particular, two invisible characters appear at the end of the message: `E1 9E B5` and `E1 A0 8E`. This indicates that a message was encoded in binary. We can convert the first invisible character to a 0 and the second to a 1, and then convert the binary to ASCII to get the flag. This can be done through this script:
 
 ```python
 with open("invisible.txt", "rb") as f:
