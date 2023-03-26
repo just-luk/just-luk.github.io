@@ -1,7 +1,7 @@
 
 colorScheme = "congo"
-defaultAppearance = "light"
-# autoSwitchAppearance = true
+defaultAppearance = "dark"
+autoSwitchAppearance = true
 
 enableSearch = true
 enableCodeCopy = true
