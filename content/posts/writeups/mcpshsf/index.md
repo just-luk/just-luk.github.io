@@ -192,7 +192,7 @@ It's a new flag! `flag{cr3d5_4r3_u53fu1_w0w}`. We also got some new credentials 
 In HSFs, it's important to note any credentials found, as they may be useful later. In this case, we can use these credentials to login to Facebook.
 
 ### Corncob's Website
-Corncob mentions that his credentials on his website  [http://corncobs-sus-website.chals.mcpshsf.com](http://corncobs-sus-website.chals.mcpshsf.com) and that finding them is related to robots. This is a hint that we need to look at the robots.txt file. After looking at the robots.txt file, we find this:
+Corncob mentions that his credentials are on his website  [http://corncobs-sus-website.chals.mcpshsf.com](http://corncobs-sus-website.chals.mcpshsf.com) and that finding them is related to robots. This is a hint that we need to look at the robots.txt file. After looking at the robots.txt file, we find this:
 ```
 User-agent: *
 Disallow: flag{domo_arigato}
@@ -217,7 +217,7 @@ This could be a motive for Long to kill Chance. In addition, Chance appears to p
 ### Dead Chance
 Upon logging into Facebook, we find a picture of Chance's dead body with a pan next to it. This image is shown here:
 ![Image](chance.jpg)
-There also appears to a fingerprint on the pan. These could be clues to who killed Chance. Let's also look at the metadata of the image. We can do this by running `exiftool` on the image. We get the following output:
+There also appears to be a fingerprint on the pan. This could be a clue to who killed Chance. Let's also look at the metadata of the image. We can do this by running `exiftool` on the image. We get the following output:
 ```
 ExifTool Version Number         : 12.40
 File Name                       : chance.jpg
