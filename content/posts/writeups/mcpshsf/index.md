@@ -115,13 +115,17 @@ Here's a graph of all the challenges for MCPS HSF 2023:
         return '#000000';
     }
   };
+  width = 575;
+  if (window.innerWidth < 575) {
+    width = window.innerWidth - 20;
+  }
   const Graph = ForceGraph()
     (document.getElementById('graph'))
       .graphData(data)
       .nodeId('id')
       .linkSource('source')
       .linkTarget('target')
-      .width(575)
+      .width(width)
       .height(550)
       .backgroundColor('dark: black white')
       .linkColor(() => '#848482')

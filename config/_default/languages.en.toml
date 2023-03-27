@@ -3,7 +3,7 @@ title = 'Luke Griffith'
 [author]
 name = "Luke Griffith"
 image = "profile.png"
-headline = "Hacker and Developer"
+headline = "Student, Hacker, Developer"
 bio = "Luke has been playing CTFs and doing HackTheBox for years, and likes running cyber-competitions too. He enjoys software development, and absolutely loves creating software to improve security."
 links = [
   { github = "https://github.com/just-luk", linkedin = "https://linkedin.com/in/lukeg123"}
