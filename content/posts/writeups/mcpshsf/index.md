@@ -221,7 +221,7 @@ This could be a motive for Long to kill Chance. In addition, Chance appears to p
 ### Dead Chance
 Upon logging into Facebook, we find a picture of Chance's dead body with a pan next to it. This image is shown here:
 ![Image](chance.jpg)
-There also appears to be a fingerprint on the pan. This could be a clue to who killed Chance. Let's also look at the metadata of the image. We can do this by running `exiftool` on the image. We get the following output:
+There also appears to be a fingerprint on the pan. This could help us identify who killed Chance. Let's also look at the metadata of the image. We can do this by running `exiftool` on the image. We get the following output:
 ```
 ExifTool Version Number         : 12.40
 File Name                       : chance.jpg
@@ -395,7 +395,7 @@ First, looking at the comments on the Robot images, we find that someone stole H
 
 This clears Hubbz as a suspect, as the murder weapon was stolen from him.
 
-Lastly, a post from Karst gives a filesharing website, [htts://fileshare-flask.chals.mcpshsf.com](https://fileshare-flask.chals.mcpshsf.com). Using the username for the pan image, `k4r5t_t0p0gr4phy`, and the password from the robot images, `y4z00_tr1but4ry`. We can log in and look for more clues. 
+Lastly, a post from Karst gives a filesharing website, [htts://fileshare-flask.chals.mcpshsf.com](https://fileshare-flask.chals.mcpshsf.com). Using the username for the pan image, `k4r5t_t0p0gr4phy`, and the password from the robot images, `y4z00_tr1but4ry`, we can log in and look for more clues. 
 
 ## Chance's Blog
 Before we look at the filesharing site, let's go back and investigate Chance's blog that he posted to Twitter.
