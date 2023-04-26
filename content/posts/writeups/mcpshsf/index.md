@@ -25,7 +25,7 @@ MCPS HSF (Montgomery County Public Schools High School Forensics) is a CTF compe
 </div>
 {{< /rawhtml >}}
 
-The challenges were all based on real-world forensics challenges, but with a twist. The twist was that the challenges were all based on the same story, and the challenges were all interconnected. The goal was to solve all the challenges and figure out who killed Chance. 
+The goal this year was to figure out who killed Chance. Also, make sure to check out b1c's [excellent writeup](b1c_writeup.pdf)!
 
 ## Challenge Graph
 
