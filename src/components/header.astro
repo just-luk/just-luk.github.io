@@ -29,7 +29,7 @@ let navItems: Array<NavItem> = [
 >
 	<div class="flex items-center gap-0 xs:gap-4 sm:gap-8">
 		<a
-			class="relative hidden flex-row items-center gap-2 hover:opacity-50 xs:flex"
+			class="relative flex-row items-center gap-2 hover:opacity-50 flex"
 			href="/"
 		>
 			<Image src={Logo} alt="Logo" class="h-12 w-12" />
@@ -173,6 +173,11 @@ let navItems: Array<NavItem> = [
 		}
 		100% {
 			transform: translateY(0);
+		}
+	}
+	@media (max-width: 640px) {
+		#page-header {
+			@apply z-20;
 		}
 	}
 </style>
