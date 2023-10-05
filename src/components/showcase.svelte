@@ -38,7 +38,7 @@
 	let projects: Project[] = [
 		{
 			title: "xCTF Website",
-			url: "https://github.com/xCTF/xctf",
+			url: "https://github.com/xctf-io/xctf",
 			image: "images/ctf-website.png",
 		},
 		{
@@ -67,7 +67,7 @@
 			image: "images/my-website.png",
 		},
 		{
-			title: "Chalgen",
+			title: "CTF Challenge Generator",
 			url: "https://github.com/xctf-io/chalgen",
 			image: "images/chalgen.png",
 		},
