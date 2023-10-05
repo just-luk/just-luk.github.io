@@ -1,0 +1,148 @@
+---
+import Icon from "astro-icon";
+import type { FooterLink, Project } from "~/types";
+import Showcase from "./showcase.svelte";
+const links: Array<FooterLink> = [
+	{
+		url: "mailto:lukeg@umd.edu",
+		description: "Email",
+		icon: "mdi:email",
+	},
+	{
+		url: "https://github.com/just-luk/",
+		description: "Github",
+		icon: "mdi:github",
+	},
+	{
+		url: "https://www.linkedin.com/in/luke-griffith1/",
+		description: "LinkedIn",
+		icon: "mdi:linkedin",
+	},
+];
+
+let projects: Array<Project> = [
+	{
+		title: "xCTF Website",
+		url: "https://github.com/xCTF/xctf",
+		image: "images/ctf-website.png",
+	},
+	{
+		title: "GCLD Certification",
+		url: "https://www.credly.com/badges/848fa69d-6b8d-4306-b522-a6e43c812b17",
+		image: "images/gcld.jpg",
+	},
+	{
+		title: "Breakerspace Lab",
+		url: "https://breakerspace.cs.umd.edu/",
+		image: "images/breakerspace.png",
+	},
+	{
+		title: "MCPSHSF Website",
+		url: "https://mcpshsf.com",
+		image: "images/hsf-website.png",
+	},
+	{
+		title: "MCPSHSF 2023",
+		url: "https://github.com/xctf-io/chalgen/tree/master/competitions/mcpshsf-2023",
+		image: "images/mcpshsf.jpg",
+	},
+	{
+		title: "Chalgen",
+		url: "https://github.com/xctf-io/chalgen",
+		image: "images/chalgen.png",
+	},
+];
+
+let extraProjects: Array<Project> = [
+	{
+		title: "Network Coding Signatures",
+		url: "https://github.com/just-luk/nc-signatures",
+		image: "images/nc-signatures.png",
+	},
+	{
+		title: "This Website!",
+		url: "https://github.com/just-luk/just-luk.github.io",
+		image: "images/my-website.png",
+	},
+];
+---
+
+<div
+	class="flex flex-col px-16 pt-36 sm:px-20 md:grid md:h-screen md:grid-cols-5 md:px-0 md:pt-0"
+>
+	<div
+		class="col-span-2 flex flex-col justify-center gap-3 pl-0 pr-0 pt-6 md:pl-12 md:pr-12 lg:pr-20"
+	>
+		<div class="font-semibold text-4xl md:text-2xl lg:text-4xl">
+			Hello there!
+		</div>
+		<div class="inline-block font-heading text-2xl md:text-xl lg:text-2xl">
+			My name is Luke.
+		</div>
+		<div class="pt-3 font-light text-offset text-sm md:text-xs lg:text-sm">
+			I'm a computer science student at the University of Maryland and I
+			love hacking, whether it be in software or cybersecurity. I love
+			both breaking into and building websites, and I combine these
+			interests in my projects.
+		</div>
+		<ul class="flex flex-row pt-3">
+			{
+				links.map((link) => (
+					<li>
+						<a
+							class="flex h-16 w-16 pr-6 hover:text-primary"
+							href={link.url}
+							aria-label={link.description}
+						>
+							<span class="sr-only">{link.description}</span>
+							<Icon class="h-full" name={link.icon} />
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+	<div class="col-span-3 hidden xl:block">
+		<Showcase client:load />
+	</div>
+	<div
+		class="col-span-3 mt-12 flex flex-col justify-center rounded-lg bg-offset p-6 md:mt-0 xl:hidden"
+	>
+		<div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-4">
+			{
+				projects.map((project) => (
+					<a
+						href={project.url}
+						class="group relative hover:scale-[1.03]"
+					>
+						<img
+							src={project.image}
+							alt={project.title}
+							class="h-full w-full rounded-lg object-cover"
+						/>
+						<div class="absolute bottom-0 z-10 m-4 rounded-md bg-semitransparent px-4 py-2 font-light opacity-0 transition-all duration-500 text-xs group-hover:opacity-100 xl:text-sm">
+							{project.title}
+						</div>
+					</a>
+				))
+			}
+			{
+				extraProjects.map((project) => (
+					<a
+						href={project.url}
+						class="group relative hidden hover:scale-[1.03] md:block lg:hidden"
+					>
+						<img
+							src={project.image}
+							alt={project.title}
+							class="h-full w-full rounded-lg object-cover"
+						/>
+						<div class="absolute bottom-0 z-10 m-4 rounded-md bg-semitransparent px-4 py-2 font-light opacity-0 transition-all duration-500 text-xs group-hover:opacity-100 xl:text-sm">
+							{project.title}
+						</div>
+					</a>
+				))
+			}
+		</div>
+	</div>
+</div>

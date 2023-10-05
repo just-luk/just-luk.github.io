@@ -1,0 +1,15 @@
+/* TODO: consider creating <Button> and <GradientText> components */
+a {
+	@apply transition-all duration-200 hover:scale-105 hover:ease-in-out;
+}
+.link {
+	@apply text-primary underline underline-offset-[6px] hover:decoration-wavy;
+}
+
+@font-face {
+	font-family: "DTNightingale";
+	src: url("/fonts/DTNightingale-Light.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}

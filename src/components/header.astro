@@ -1,0 +1,178 @@
+---
+import { Icon } from "astro-icon";
+import ThemeSwitcher from "~/components/theme-switcher.astro";
+import type { FooterLink, NavItem } from "~/types";
+
+import Logo from "src/assets/logo.png";
+import { Image } from "astro:assets";
+
+interface Props {
+	onBlog: boolean;
+	selected: string;
+}
+
+const { onBlog, selected } = Astro.props;
+
+let navItems: Array<NavItem> = [
+	{ title: "Home", url: "/", selected: selected === "Home" },
+	{ title: "About", url: "/about", selected: selected === "About" },
+	{ title: "Posts", url: "/posts", selected: selected === "Posts" },
+	{ title: "Tags", url: "/tags", selected: selected === "Tags" },
+];
+---
+
+<header
+	id="page-header"
+	class={`${
+		onBlog ? "bg-default z-20" : ""
+	} absolute top-0 flex w-full items-center justify-between border-b-2 border-transparent px-5 sm:pl-12 sm:pr-8 py-8 ease-linear transition-all duration-250 font-light`}
+>
+	<div class="flex items-center gap-0 xs:gap-4 sm:gap-8">
+		<a
+			class="relative hidden flex-row items-center gap-2 hover:opacity-50 xs:flex"
+			href="/"
+		>
+			<Image src={Logo} alt="Logo" class="h-12 w-12" />
+		</a>
+	</div>
+	<div class="z-20">
+		<div
+			class="group flex items-center rounded-xl bg-semitransparent py-2 pl-4 pr-5 backdrop-blur text-xs hover:bg-semitransparenthover"
+		>
+			<nav class="hidden md:block">
+				<ul class="flex items-center">
+					{
+						navItems.map(({ title, url, selected }) => (
+							<li
+								class={
+									"rounded-md px-4 py-2 hover:bg-default group-hover:opacity-60 hover:group-hover:opacity-100 " +
+									(selected ? "bg-headerselection" : "")
+								}
+							>
+								<a href={url}>{title}</a>
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+			<ThemeSwitcher />
+			<button
+				id="open-nav-button"
+				type="button"
+				class="btn pl-3 md:hidden"
+				aria-label="Navigation"
+			>
+				<Icon pack="mdi" name="menu" class="h-8 w-8" />
+			</button>
+		</div>
+		<div id="menu-modal" class="modal hidden" aria-hidden="true">
+			<div class="fixed inset-0 bg-default px-8 py-4 text-default">
+				<div class="group space-y-4" role="dialog" aria-modal="true">
+					<div class="text-right">
+						<button
+							id="close-nav-button"
+							type="button"
+							class="btn"
+							aria-label="Close navigation"
+						>
+							<Icon pack="mdi" name="close" class="h-8" />
+						</button>
+					</div>
+					<div class="flex justify-center">
+						<Image src={Logo} alt="Logo" class="h-12 w-12" />
+					</div>
+					<nav>
+						<ul class="flex flex-col">
+							{
+								navItems.map(({ title, url }) => (
+									<li>
+										<a
+											class="block py-4 text-center font-medium text-lg hover:text-primary"
+											href={url}
+										>
+											{title}
+										</a>
+									</li>
+								))
+							}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+
+<script>
+	import MicroModal from "micromodal";
+	import invariant from "tiny-invariant";
+
+	const menuModalId = "menu-modal";
+
+	const header = document.querySelector("#page-header") as HTMLElement;
+	const menu = document.querySelector(`#${menuModalId} ul`);
+	const openNavButton = document.querySelector("#open-nav-button");
+	const closeNavButton = document.querySelector("#close-nav-button");
+
+	invariant(header, "header should not be null");
+	invariant(menu, "menu should not be null");
+	invariant(openNavButton, "openNavButton should not be null");
+	invariant(closeNavButton, "closeNavButton should not be null");
+
+	const openMenu = () => {
+		MicroModal.show(menuModalId, { disableScroll: true });
+	};
+
+	const closeMenu = () => {
+		MicroModal.close(menuModalId);
+	};
+
+	openNavButton.addEventListener("click", openMenu);
+	closeNavButton.addEventListener("click", closeMenu);
+
+	var prevScrollPos = window.scrollY;
+	document.addEventListener("scroll", () => {
+		var currentScrollPos = window.scrollY;
+
+		if (prevScrollPos <= currentScrollPos || currentScrollPos === 0) {
+			header.classList.remove("fixed-header");
+		} else {
+			header.classList.add("fixed-header");
+		}
+
+		prevScrollPos = currentScrollPos;
+	});
+
+	menu.addEventListener("click", (event) => {
+		if ((event.target as HTMLElement).tagName === "A") {
+			closeMenu();
+		}
+	});
+</script>
+
+<noscript>
+	<style>
+		#open-nav-button {
+			display: none;
+		}
+	</style>
+</noscript>
+
+<style>
+	.fixed-header {
+		@apply fixed bottom-auto top-0;
+		@apply border-default bg-header backdrop-blur;
+		animation: slideDown 0.25s linear;
+	}
+	.modal.is-open {
+		@apply block;
+	}
+	@keyframes slideDown {
+		0% {
+			transform: translateY(-100%);
+		}
+		100% {
+			transform: translateY(0);
+		}
+	}
+</style>

@@ -1,0 +1,10 @@
+---
+import Header from "~/components/header.astro";
+import Splash from "~/components/splash.astro";
+import SiteLayout from "~/layouts/site-layout.astro";
+---
+
+<SiteLayout title="Luke Griffith">
+	<Header onBlog={false} selected="Home" />
+	<Splash />
+</SiteLayout>

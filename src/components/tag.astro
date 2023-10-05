@@ -1,0 +1,16 @@
+---
+export interface Props {
+	name: string;
+}
+
+const { name } = Astro.props;
+---
+
+<li class="mx-3 my-1 inline-block xs:my-2 md:my-3">
+	<a
+		href={`/tags/${name.toLowerCase()}`}
+		class="link group text-sm md:text-lg"
+	>
+		<span>#{name.toLowerCase()}</span>
+	</a>
+</li>

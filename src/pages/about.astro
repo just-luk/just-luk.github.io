@@ -1,0 +1,21 @@
+---
+import BlogLayout from "~/layouts/blog-layout.astro";
+import { Image } from "astro:assets";
+import Profile from "src/assets/profile.png";
+---
+
+<BlogLayout title="About" page="About">
+	<div class="flex flex-col items-center gap-8 pb-36">
+		<Image
+			src={Profile}
+			alt="Profile"
+			class="h-96 w-3/4 rounded-2xl object-cover object-right-top lg:w-1/2"
+		/>
+		<div class="text-sm sm:text-default w-3/4 lg:w-1/2">
+			Welcome! I'm a computer science student at the University of
+			Maryland and I love hacking, whether it be in software or
+			cybersecurity. I love both breaking into and building websites, and
+			I combine these interests in my projects.
+		</div>
+	</div>
+</BlogLayout>

@@ -1,0 +1,48 @@
+---
+import { getCollection } from "astro:content";
+import SiteLayout from "./site-layout.astro";
+import Header from "~/components/header.astro";
+import Footer from "~/components/footer.astro";
+
+const { title, page, description } = Astro.props;
+---
+
+<SiteLayout title="MCPSHSF Blog">
+	<Header onBlog={true} selected={page} />
+</SiteLayout>
+<div class="relative min-h-screen">
+	<div
+		id="blog-header"
+		class="mb-6 flex flex-col items-center gap-4 px-4 pb-8 pt-32 xs:pb-12 xs:pt-[144px]"
+	>
+		<div class="min-w-full text-center font-medium text-3xl xs:text-6xl">
+			{title}
+		</div>
+		{
+			description && (
+				<div class="text-center font-heading font-extralight text-lg xs:text-2xl">
+					{description}
+				</div>
+			)
+		}
+	</div>
+	<slot />
+	<div class="absolute bottom-0 left-1/2 mt-8 -translate-x-1/2">
+		<Footer />
+	</div>
+</div>
+<style>
+	#blog-header {
+		background-size: 40px 40px;
+		background-image: linear-gradient(
+				to right,
+				var(--color-border-low-contrast) 1px,
+				transparent 1px
+			),
+			linear-gradient(
+				to bottom,
+				var(--color-border-low-contrast) 1px,
+				transparent 1px
+			);
+	}
+</style>

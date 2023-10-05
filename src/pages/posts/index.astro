@@ -1,0 +1,69 @@
+---
+import { getCollection } from "astro:content";
+import FormattedDate from "~/components/formatted-date.astro";
+import BlogLayout from "~/layouts/blog-layout.astro";
+import Icon from "astro-icon";
+import getPostsWithRT from "~/utils/getPostsWithRT.ts";
+
+const posts = (await getCollection("blog")).sort(
+	(a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf(),
+);
+const postsWithRT = await getPostsWithRT(posts);
+---
+
+<BlogLayout
+	title="Welcome to my blog!"
+	page="Posts"
+	description="I write about cyber or random things on my mind."
+>
+	<div class="flex w-full flex-col items-center pb-64">
+		<div class=""></div>
+		<div
+			class="mx-6 grid max-w-7xl grid-cols-1 gap-16 xs:mx-8 lg:mx-0 lg:grid-cols-2"
+		>
+			{
+				postsWithRT.map((post) => (
+					<a
+						href={`/posts/${post.slug}/`}
+						class="max-w-lg overflow-hidden rounded-md border border-lowcontrast bg-lowcontrast"
+					>
+						<img
+							class="w-full object-cover md:h-60"
+							src={post.data.heroImage}
+							alt=" hero image"
+						/>
+						<div class="px-4 pb-4 pt-2 md:px-6 md:pb-6 md:pt-3">
+							<ul>
+								{post.data.tags.map((tag) => (
+									<li class="mr-2 inline-block font-light text-primary text-xs xs:text-sm">
+										#{tag}
+									</li>
+								))}
+							</ul>
+							<p class="font-bold xs:text-lg">
+								{post.data.title}
+							</p>
+							<p class="font-extralight text-xs xs:text-sm">
+								{post.data.description}
+							</p>
+							<p class="pt-2 font-light text-offset opacity-60 text-xs">
+								<Icon
+									class="mr-1 inline-block h-5 opacity-60"
+									name="mdi:calendar-clock"
+								/>
+								<FormattedDate date={post.data.pubDate} />
+								<Icon
+									class="ml-4 mr-1 inline-block h-5 opacity-60"
+									name="mdi:clock-outline"
+								/>
+								<span>
+									{post.data.readingTime?.slice(0, -5)}
+								</span>
+							</p>
+						</div>
+					</a>
+				))
+			}
+		</div>
+	</div>
+</BlogLayout>

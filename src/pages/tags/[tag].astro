@@ -1,0 +1,74 @@
+---
+import { getCollection } from "astro:content";
+import FormattedDate from "../../components/formatted-date.astro";
+import getUniqueTags from "../../utils/getUniqueTags";
+import getPostsByTag from "../../utils/getPostsByTag";
+import BlogLayout from "../../layouts/blog-layout.astro";
+import Icon from "astro-icon";
+
+export async function getStaticPaths() {
+	const posts = await getCollection("blog");
+
+	const tags = getUniqueTags(posts);
+
+	return tags.map((tag) => {
+		return {
+			params: { tag },
+			props: { tag },
+		};
+	});
+}
+
+const { tag } = Astro.props;
+
+const posts = await getCollection("blog");
+const taggedPosts = getPostsByTag(posts, tag);
+const sortedPosts = taggedPosts.sort(
+	(a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf(),
+);
+---
+
+<BlogLayout title={`Tag:${tag}`} page="Tags">
+	<div class="flex w-full flex-col items-center pb-64">
+		<div
+			class="mx-5 grid max-w-7xl grid-cols-1 gap-16 xs:mx-8 md:mx-0 md:grid-cols-2"
+		>
+			{
+				sortedPosts.map((post) => (
+					<a
+						href={`/posts/${post.slug}/`}
+						class="max-w-lg overflow-hidden rounded-md border border-lowcontrast bg-lowcontrast"
+					>
+						<img
+							class="w-full object-cover md:h-60"
+							src={post.data.heroImage}
+							alt=""
+						/>
+						<div class="px-4 pb-4 pt-2">
+							<ul>
+								{post.data.tags.map((t) => (
+									<li class="mr-2 inline-block font-light text-primary text-xs xs:text-sm">
+										#{t}
+									</li>
+								))}
+							</ul>
+							<p class="font-bold xs:text-lg">
+								{post.data.title}
+							</p>
+							<p class="font-extralight text-xs xs:text-sm">
+								{post.data.description}
+							</p>
+							<p class="pt-2 font-light text-offset opacity-50 text-xs">
+								<Icon
+									class="mr-2 inline-block h-5 opacity-50"
+									name="mdi:calendar-clock"
+								/>
+								<FormattedDate date={post.data.pubDate} />
+							</p>
+						</div>
+					</a>
+				))
+			}
+		</div>
+	</div>
+</BlogLayout>

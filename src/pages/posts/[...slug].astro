@@ -1,0 +1,54 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import SiteLayout from "../../layouts/site-layout.astro";
+import Header from "~/components/header.astro";
+import FormattedDate from "~/components/formatted-date.astro";
+import Footer from "~/components/footer.astro";
+
+export async function getStaticPaths() {
+	const posts = await getCollection("blog");
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: post,
+	}));
+}
+type Props = CollectionEntry<"blog">;
+
+const post = Astro.props;
+const { Content } = await post.render();
+---
+
+<SiteLayout title={post.data.title}>
+	<div class="flex w-full flex-col items-center overflow-hidden break-words">
+		<Header onBlog={true} selected="Posts" />
+		<div
+			class="flex flex-col gap-1 px-4 pt-[104px] text-center xs:gap-2 xs:pt-[112px] md:gap-4 md:pt-32"
+		>
+			<span class="font-mono text-xs">
+				<FormattedDate date={post.data.pubDate} />
+			</span>
+			<div>
+				<div class="font-black text-4xl">
+					{post.data.title}
+				</div>
+				<div class="hidden font-thin text-base xs:block">
+					{post.data.description}
+				</div>
+			</div>
+			<div class="mt-2 h-1 w-full rounded-full bg-secondary"></div>
+			<img
+				class="my-4 w-full max-w-3xl rounded-md border border-lowcontrast drop-shadow-lowcontrast"
+				src={post.data.heroImage}
+				alt=""
+			/>
+		</div>
+		<article
+			class="prose-strong:!text-skin-base prose prose-sm w-full px-8 pt-4 font-light text-default xs:prose-base lg:prose-lg prose-headings:!mb-3 prose-headings:text-default prose-blockquote:border-text prose-blockquote:italic prose-blockquote:text-default prose-code:text-primary prose-pre:bg-code prose-img:rounded-md lg:px-0 lg:pt-8"
+		>
+			<Content />
+		</article>
+	</div>
+	<div class="mt-8 xs:mt-16 md:mt-24">
+		<Footer />
+	</div>
+</SiteLayout>

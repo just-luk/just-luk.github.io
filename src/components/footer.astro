@@ -1,0 +1,41 @@
+---
+import { Icon } from "astro-icon";
+import type { FooterLink } from "~/types";
+
+const links: Array<FooterLink> = [
+	{
+		url: "mailto:lukeg@umd.edu",
+		description: "Email",
+		icon: "mdi:email",
+	},
+	{
+		url: "https://github.com/just-luk/",
+		description: "Github",
+		icon: "mdi:github",
+	},
+	{
+		url: "https://www.linkedin.com/in/luke-griffith1/",
+		description: "LinkedIn",
+		icon: "mdi:linkedin",
+	},
+];
+---
+
+<footer class="flex w-full flex-col items-center text-default text-white">
+	<ul class="mb-2 flex flex-row items-center justify-center">
+		{
+			links.map((link) => (
+				<li>
+					<a
+						class="flex h-16 w-16 p-4 hover:text-primary sm:h-20 sm:w-20"
+						href={link.url}
+						aria-label={link.description}
+					>
+						<span class="sr-only">{link.description}</span>
+						<Icon class="h-full" name={link.icon} />
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</footer>

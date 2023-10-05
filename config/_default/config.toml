@@ -1,9 +1,0 @@
-baseURL = 'https://lukegriffith.me'
-defaultContentLanguage = "en"
-
-enableRobotsTXT = true
-paginate = 15
-summaryLength = 0
-
-[outputs]
-  home = ["HTML", "JSON"]
